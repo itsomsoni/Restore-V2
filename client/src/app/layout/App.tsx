@@ -33,7 +33,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline></CssBaseline>
-      <NavBar darkMode={darkMode} onToggleDarkMode={toggleDarkMode} />
+      <NavBar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
       <Box sx={{
         minHeight: '100vh'
         , background: darkMode

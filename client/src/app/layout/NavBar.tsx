@@ -4,10 +4,10 @@ import LightMode from "@mui/icons-material/LightMode";
 
 type Props = {
     darkMode?: boolean,
-    onToggleDarkMode?: () => void,
+    toggleDarkMode?: () => void,
 }
 
-export default function NavBar({ darkMode, onToggleDarkMode }: Props) {
+export default function NavBar({ darkMode, toggleDarkMode }: Props) {
 
     return (
         <AppBar position="fixed">
@@ -15,7 +15,7 @@ export default function NavBar({ darkMode, onToggleDarkMode }: Props) {
                 <Typography variant="h6" color="inherit">
                     Re-store
                 </Typography>
-                <IconButton sx={{ ml: 'auto' }} color="inherit" onClick={onToggleDarkMode}>
+                <IconButton sx={{ ml: 'auto' }} color="inherit" onClick={toggleDarkMode}>
                     {darkMode ? <DarkMode /> : <LightMode sx={{ color: 'yellow' }} />}
                 </IconButton>
             </Toolbar>
