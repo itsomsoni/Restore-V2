@@ -20,9 +20,6 @@ export default function ContactPage() {
         <Button color="error" onClick={() => dispatch(decrement(1))}>Decrement</Button>
         <Button color="secondary" onClick={() => dispatch(increment(1))}>Increment</Button>
         <Button color="primary" onClick={() => dispatch(increment(5))}>Increment by 5</Button>
-        {/* <Button color="error" onClick={() => dispatch(DecrementLegacy())}>Decrement</Button>
-        <Button color="secondary" onClick={() => dispatch(IncrementLegacy())}>Increment</Button>
-        <Button color="primary" onClick={() => dispatch(IncrementLegacy(5))}>Increment by 5</Button> */}
       </ButtonGroup>
     </>
   )
