@@ -5,7 +5,7 @@ namespace API.Data;
 
 public class DbInitializer
 {
-public static void InitDb(WebApplication app)
+    public static void InitDb(WebApplication app)
     {
         using var scope = app.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<StoreContext>()

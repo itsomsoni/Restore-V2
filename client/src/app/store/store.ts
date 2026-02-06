@@ -3,6 +3,7 @@ import counterReducer, { counterSlice } from "../../features/contact/counterRedu
 import { useDispatch, useSelector } from "react-redux";
 import { catalogAPI } from "../../features/catalog/catalogAPI";
 import { uiSlice } from "../layout/uiSlice";
+import { errorAPI } from "../../features/about/errorAPI";
 
 export function configureTheStore() {
     return legacy_createStore(counterReducer);
@@ -11,11 +12,12 @@ export function configureTheStore() {
 export const store = configureStore({
     reducer: {
         [catalogAPI.reducerPath]: catalogAPI.reducer,
+        [errorAPI.reducerPath]: errorAPI.reducer,
         counter: counterSlice.reducer,
         uiSlice: uiSlice.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(catalogAPI.middleware),
+        getDefaultMiddleware().concat(catalogAPI.middleware, errorAPI.middleware),
 })
 
 export type RootState = ReturnType<typeof store.getState>;
