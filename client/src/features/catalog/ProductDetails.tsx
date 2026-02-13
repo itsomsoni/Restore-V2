@@ -1,12 +1,40 @@
 import { useParams } from "react-router-dom"
 import { Button, Divider, Grid2, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
 import { useFetchProductDetailsQuery } from "./catalogAPI";
+import { useAddBasketItemMutation, useFetchBasketQuery, useRemoveBasketItemMutation } from "../basket/basketAPI";
+import { useEffect, useState, type ChangeEvent } from "react";
 
 export default function ProductDetails() {
   const { id } = useParams();
-  const { data: product , isLoading} = useFetchProductDetailsQuery(id ? +id : 0);
+
+  const [addBasketItem] = useAddBasketItemMutation();
+  const [removeBasketItem] = useRemoveBasketItemMutation();
+  const { data: basket } = useFetchBasketQuery();
+  const item = basket?.items.find(x => x.productId === +id!);
+
+  const [Qty, setQty] = useState(0);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (item) setQty(item.quantity);
+  }, [item]);
+
+  const { data: product, isLoading } = useFetchProductDetailsQuery(id ? +id : 0);
 
   if (!product || isLoading) return <div>Loading...</div>;
+
+  const handleUpdateBasket = () => {
+    const updatedQty = item ? Math.abs(Qty - item?.quantity) : Qty;
+    if (!item || Qty > item.quantity)
+      addBasketItem({ product: product, quantity: updatedQty })
+    else
+      removeBasketItem({ productId: +id!, quantity: updatedQty });
+  }
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = +event.currentTarget.value;
+
+    if (value >= 0) setQty(value);
+  }
 
   const productDetails = [
     { label: 'Name', value: product.name },
@@ -48,17 +76,22 @@ export default function ProductDetails() {
             <TextField
               variant='outlined'
               type='number'
-              label='Quantity in Cart'
+              label='Quantity in Basket'
               fullWidth
-              defaultValue={1}
+              value={Qty}
+              onChange={handleInputChange}
             >
             </TextField>
           </Grid2>
           <Grid2 size={6}>
-            <Button 
+            <Button
+              onClick={handleUpdateBasket}
+              disabled={
+                Qty === item?.quantity || !item && Qty === 0
+              }
               sx={{ height: '100%' }}
               variant="contained" color="primary" size="large" fullWidth>
-              Add to Cart
+              {item ? "Update basket" : "Add to Basket"}
             </Button>
           </Grid2>
         </Grid2>
