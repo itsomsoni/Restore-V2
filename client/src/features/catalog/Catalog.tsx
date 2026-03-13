@@ -1,25 +1,42 @@
-// import { useEffect, useState } from "react";
-// import type { Product } from "../../app/models/Product"
+import { Grid2, Typography } from "@mui/material";
 import ProductList from "./ProductList"
-import { useFetchProductsQuery } from "./catalogAPI";
+import { useFetchFiltersQuery, useFetchProductsQuery } from "./catalogAPI";
+import Filters from "./Filters";
+import { useAppSelector } from "../../app/store/store";
+import AppPagination from "../../app/shared/components/AppPagination";
+import { useDispatch } from "react-redux";
+import { setPagNumber } from "./catalogSlice";
 
 export default function Catalog() {
-  // const [products, setProducts] = useState<Product[]>([]);
+  const productParams = useAppSelector(state => state.catalog);
+  const { data, isLoading } = useFetchProductsQuery(productParams);
+  const { data: filtersData, isLoading: isFiltersLoading } = useFetchFiltersQuery();
+  const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   fetch('https://localhost:5001/api/products')
-  //     .then(response => response.json())
-  //     .then(data => setProducts(data))
-  //     .catch(error => console.error('Error fetching products:', error));
-  // }, []);
-
-  const { data, isLoading } = useFetchProductsQuery();
-
-  if (isLoading || !data) return <div>Loading...</div>;
+  if (isLoading || !data || isFiltersLoading || !filtersData) return <div>Loading...</div>;
 
   return (
-    <>
-      <ProductList products={data} />
-    </>
+    <Grid2 container spacing={4}>
+      <Grid2 size={3}>
+        <Filters filterData={filtersData} />
+      </Grid2>
+      <Grid2 size={9}>
+        {
+          data.items && data.items.length > 0 ? (
+            <>
+              <ProductList products={data.items} />
+              <AppPagination
+                metaData={data.pagination}
+                onPageChange={(page) => {
+                  dispatch(setPagNumber(page))
+                  window.scrollTo({ top: 0, behavior: 'smooth' })
+                }} />
+            </>
+          ) : (
+            <Typography>There are no result for this filter</Typography>
+          )
+        }
+      </Grid2>
+    </Grid2>
   )
 }
